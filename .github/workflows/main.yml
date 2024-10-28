@@ -89,4 +89,4 @@ jobs:
          -Danypoint.password="$PASSWORD" \
          -Danypoint.platform.client_id="$CLIENT_ID" \
          -Danypoint.platform.client_secret="$CLIENT_SECRET" \
-         -Denv=Dev
+         -Denv=dev
