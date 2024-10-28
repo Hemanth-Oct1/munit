@@ -2,9 +2,9 @@ name: Build, Test, and Deploy to Dev
 
 on:
   push:
-    branches: [ archima ]
+    branches: [ main ]
   pull_request:
-    branches: [ archima ]
+    branches: [ main ]
     
 jobs:
   build:
