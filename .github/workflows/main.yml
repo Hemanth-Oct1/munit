@@ -2,9 +2,9 @@ name: Build, Test, and Deploy to Dev
 
 on:
   push:
-    branches: [ mai ]
+    branches: [ main ]
   pull_request:
-    branches: [ mai ]
+    branches: [ main ]
     
 jobs:
   test:
@@ -25,9 +25,6 @@ jobs:
         distribution: 'zulu'
         java-version: 8
     - name: Test with Maven
-      env:
-        nexus_username: ${{ secrets.nexus_username }}
-        nexus_password: ${{ secrets.nexus_password }}
       run: mvn test --settings .maven/settings.xml
     - name: Upload MUnit reports
       uses: actions/upload-artifact@v3
