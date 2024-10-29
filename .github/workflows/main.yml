@@ -2,9 +2,9 @@ name: Build, Test, and Deploy to Dev
 
 on:
   push:
-    branches: [ main ]
+    branches: [ mai ]
   pull_request:
-    branches: [ main ]
+    branches: [ mai ]
     
 jobs:
   test:
@@ -25,7 +25,11 @@ jobs:
         distribution: 'zulu'
         java-version: 8
     - name: Test with Maven
-      run: mvn test
+      env:
+        nexus_username: ${{ secrets.nexus_username }}
+        nexus_password: ${{ secrets.nexus_password }}
+        KEY: ${{ secrets.decryption_key }}
+      run: mvn test --settings .maven/settings.xml -Ddecryption.key="$KEY" -Dmule.env=dev
     - name: Upload MUnit reports
       uses: actions/upload-artifact@v3
       with:
@@ -53,7 +57,10 @@ jobs:
           java-version: 8
       - name: Publish to Exchange
         run: |
-          mvn deploy -DskipMunitTests
+          mvn deploy --settings .maven/settings.xml -DskipMunitTests \
+          -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
+          -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}"
+
 
   deploydev:
     needs: build
@@ -70,10 +77,12 @@ jobs:
           ${{ runner.os }}-maven-       
     - name: Deploy to dev
       run: |
-        mvn deploy -DmuleDeploy -DskipMunitTests  \
+        mvn deploy --settings .maven/settings.xml -DmuleDeploy -DskipMunitTests  \
         -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
         -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" \
+        -Ddecryption.key="${{ secrets.securekey }}" \
+        -Dmule.env=dev \
         -Denv=dev \
         -Dappname=algolia-app-dev-ch2 \
-        -Danypoint.platform.client_id="${{secrets.client_id}}" \
-        -Danypoint.platform.client_secret="${{secrets.client_secret}}"
+        -Danypoint.platform.client_id="${{secrets.org_client_id}}" \
+        -Danypoint.platform.client_secret="${{secrets.org_client_secret}}"
