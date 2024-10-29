@@ -31,14 +31,17 @@ jobs:
       run: |
         mvn clean test -X -e -DskipMuleAgent \
           org.mule.tools.maven:munit-maven-plugin:coverage-report
-      continue-on-error: true  # Allow workflow to proceed even if this step fails for easier debugging
+
+    - name: Verify Coverage Report Generation
+      run: ls -R target/site || echo "target/site directory not found"
 
     - name: Archive MUnit Coverage Report
-      if: success() || failure()  # Archive even if previous step failed
+      if: success() || failure()
       uses: actions/upload-artifact@v3
       with:
         name: munit-coverage-report
         path: target/site/munit-coverage
+
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml -X -e
