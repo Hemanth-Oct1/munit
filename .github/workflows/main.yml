@@ -26,9 +26,7 @@ jobs:
         java-version: 8
     - name: Test with Maven
       run: |
-          mvn test --settings .maven/settings.xml -DskipMunitTests \
-          -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" \
-          -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" 
+          mvn test --settings .maven/settings.xml -DskipMunitTests 
     - name: Upload MUnit reports
       uses: actions/upload-artifact@v3
       with:
